@@ -1,52 +1,554 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta
+      name="description"
+      content="Hitung luas lingkaran dengan cepat menggunakan kalkulator jari-jari sederhana."
+    />
+    <meta name="theme-color" content="#f5f7f2" />
+    <title>Kalkulator Luas Lingkaran</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        color: #172a26;
+        background: #f5f7f2;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        --ink: #172a26;
+        --muted: #71817b;
+        --green: #157a62;
+        --green-dark: #10644f;
+        --mint: #e6f4ed;
+        --line: #e7ece8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        padding: 32px;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(ellipse at 10% 12%, #e8f3e8 0, transparent 34%),
+          radial-gradient(ellipse at 94% 88%, #e7f1ea 0, transparent 30%),
+          #f5f7f2;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app {
+        width: min(100%, 980px);
+        animation: rise-in 650ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
+      }
+
+      .topline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px 4px;
+        color: #51645d;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .topline-mark {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #72b99c;
+        box-shadow: 0 0 0 4px #72b99c24;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        min-height: 540px;
+        overflow: hidden;
+        border: 1px solid #e8ede8;
+        border-radius: 28px;
+        background: #fff;
+        box-shadow:
+          0 28px 70px #243a2d12,
+          0 4px 14px #243a2d08;
+      }
+
+      .visual {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 42px;
+        background:
+          radial-gradient(circle at 50% 44%, #eef8f1 0, #e6f2e9 42%, transparent 43%),
+          #edf5ee;
+      }
+
+      .visual::before,
+      .visual::after {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border: 1px solid #cfe3d5;
+        border-radius: 50%;
+        content: "";
+        animation: orbit 28s linear infinite;
+      }
+
+      .visual::after {
+        width: 330px;
+        height: 330px;
+        border-color: #dcebe0;
+        animation-direction: reverse;
+        animation-duration: 36s;
+      }
+
+      .diagram {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 280px);
+        filter: drop-shadow(0 14px 20px #316f5520);
+      }
+
+      .diagram-circle {
+        transform-origin: 140px 140px;
+        animation: circle-in 900ms 120ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .diagram-radius {
+        stroke-dasharray: 120;
+        stroke-dashoffset: 120;
+        animation: draw-radius 800ms 500ms ease-out forwards;
+      }
+
+      .visual-caption {
+        position: relative;
+        z-index: 1;
+        margin: 20px 0 0;
+        color: #537266;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: clamp(32px, 6vw, 68px);
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 440px;
+        margin: 0;
+        color: var(--ink);
+        font-size: clamp(32px, 4vw, 46px);
+        font-weight: 720;
+        letter-spacing: -0.055em;
+        line-height: 1.08;
+      }
+
+      .intro {
+        max-width: 390px;
+        margin: 16px 0 30px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .formula {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 9px;
+        margin-bottom: 27px;
+        padding: 10px 13px;
+        border: 1px solid #e2eee6;
+        border-radius: 10px;
+        background: #f7faf7;
+        color: #436356;
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      .formula-symbol {
+        color: var(--green);
+        font-size: 17px;
+        font-weight: 750;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 9px;
+        color: #334940;
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      .input-wrap {
+        position: relative;
+      }
+
+      input {
+        width: 100%;
+        height: 56px;
+        padding: 0 64px 0 16px;
+        border: 1px solid #dfe7e1;
+        border-radius: 12px;
+        outline: none;
+        background: #fff;
+        color: var(--ink);
+        font-size: 17px;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      input::placeholder {
+        color: #a4b0aa;
+      }
+
+      input:hover {
+        border-color: #b7c9bd;
+      }
+
+      input:focus {
+        border-color: #58a889;
+        box-shadow: 0 0 0 4px #58a88920;
+      }
+
+      .unit {
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        color: #87958e;
+        font-size: 14px;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+
+      .calculate {
+        width: 100%;
+        min-height: 54px;
+        margin-top: 14px;
+        border: 0;
+        border-radius: 12px;
+        background: var(--green);
+        box-shadow: 0 7px 16px #157a622b;
+        color: #fff;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 700;
+        transition:
+          background 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .calculate:hover {
+        transform: translateY(-2px);
+        background: var(--green-dark);
+        box-shadow: 0 10px 20px #157a6235;
+      }
+
+      .calculate:active {
+        transform: translateY(0) scale(0.99);
+      }
+
+      .calculate:focus-visible {
+        outline: 3px solid #80c4a8;
+        outline-offset: 3px;
+      }
+
+      .message {
+        min-height: 21px;
+        margin: 11px 0 0;
+        color: #a34a3b;
+        font-size: 13px;
+      }
+
+      .result {
+        display: none;
+        margin-top: 4px;
+        padding: 19px 20px;
+        border: 1px solid #d9eee2;
+        border-radius: 14px;
+        background: #f0f8f2;
+      }
+
+      .result.visible {
+        display: block;
+        animation: result-in 380ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
+      }
+
+      .result-label {
+        margin: 0;
+        color: #537266;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .result-value {
+        margin: 5px 0 0;
+        color: #14664f;
+        font-size: clamp(26px, 4vw, 34px);
+        font-weight: 750;
+        letter-spacing: -0.04em;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+
+      .result-detail {
+        margin: 7px 0 0;
+        color: #6a8075;
+        font-size: 13px;
+      }
+
+      @keyframes rise-in {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes circle-in {
+        from {
+          opacity: 0;
+          transform: scale(0.82);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes draw-radius {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @keyframes orbit {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes result-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 20px;
+        }
+
+        .panel {
+          grid-template-columns: 1fr;
+          min-height: 0;
+          border-radius: 22px;
+        }
+
+        .visual {
+          min-height: 255px;
+          padding: 25px;
+        }
+
+        .diagram {
+          width: 185px;
+        }
+
+        .visual::before {
+          width: 205px;
+          height: 205px;
+        }
+
+        .visual::after {
+          width: 260px;
+          height: 260px;
+        }
+
+        .visual-caption {
+          margin-top: 8px;
+          font-size: 12px;
+        }
+
+        .content {
+          padding: 34px clamp(24px, 8vw, 48px) 38px;
+        }
+
+        .intro {
+          margin-bottom: 24px;
+        }
+
+        .formula {
+          margin-bottom: 23px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="w-1/2 mx-auto mt-10 h-[90vh]">
-      <div
-        class="flex flex-col items-center justify-center h-full bg-gray-100 p-6 rounded-lg shadow-md"
-      > 
-      <h1 class="text-3xl font-medium">Menghitung Luas Lingkaran</h1>
-        <div class="mt-4">
-          <label for="radius" class="block text-gray-700 font-bold mb-2"
-            >Masukkan jari-jari:</label
-          >
-          <input
-            type="number"
-            id="radius"
-            class="border border-gray-300 rounded px-3 py-2 w-full"
-            placeholder="Jari-jari"
-          />
-          <button
-            onclick=calculateArea()
-            class="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-600"
-          >
-            Hitung
-          </button>
-          <p id="result" class="mt-4 text-lg font-semibold"></p>
+    <main class="app">
+      <p class="topline"><span class="topline-mark" aria-hidden="true"></span>Ruang belajar matematika</p>
+      <section class="panel" aria-labelledby="page-title">
+        <div class="visual" aria-hidden="true">
+          <svg class="diagram" viewBox="0 0 280 280" fill="none">
+            <circle
+              class="diagram-circle"
+              cx="140"
+              cy="140"
+              r="105"
+              fill="#D6EBDB"
+              stroke="#76B89A"
+              stroke-width="2"
+            />
+            <path d="M140 140H245" stroke="#91C7AA" stroke-width="1.5" stroke-dasharray="5 6" />
+            <path
+              class="diagram-radius"
+              d="M140 140H245"
+              stroke="#157A62"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+            <circle cx="140" cy="140" r="5" fill="#157A62" />
+            <circle cx="245" cy="140" r="5" fill="#157A62" />
+            <rect x="176" y="119" width="43" height="27" rx="8" fill="white" />
+            <text x="197.5" y="137" text-anchor="middle" fill="#157A62" font-size="15" font-weight="700">
+              r
+            </text>
+          </svg>
+          <p class="visual-caption">Kenali jari-jari, temukan luasnya</p>
         </div>
-      </div>
-    </div>
+
+        <div class="content">
+          <p class="eyebrow">Kalkulator geometri</p>
+          <h1 id="page-title">Luas lingkaran, jadi lebih mudah.</h1>
+          <p class="intro">
+            Masukkan panjang jari-jari dan dapatkan luas lingkaran dalam sekejap.
+          </p>
+
+          <div class="formula" aria-label="Rumus luas sama dengan pi dikali jari-jari kuadrat">
+            <span class="formula-symbol" aria-hidden="true">π</span>
+            <span>L = π × r²</span>
+          </div>
+
+          <form id="calculator" novalidate>
+            <label for="radius">Panjang jari-jari</label>
+            <div class="input-wrap">
+              <input
+                type="number"
+                id="radius"
+                name="radius"
+                min="0"
+                step="any"
+                inputmode="decimal"
+                placeholder="Contoh: 7"
+                aria-describedby="radius-message"
+                required
+              />
+              <span class="unit">satuan</span>
+            </div>
+            <button class="calculate" type="submit">Hitung luas <span aria-hidden="true">→</span></button>
+            <p class="message" id="radius-message" role="status" aria-live="polite"></p>
+          </form>
+
+          <section class="result" id="result" aria-live="polite" aria-atomic="true" aria-label="Hasil perhitungan">
+            <p class="result-label">Luas lingkaran</p>
+            <p class="result-value" id="result-value"></p>
+            <p class="result-detail" id="result-detail"></p>
+          </section>
+        </div>
+      </section>
+    </main>
 
     <script>
-      function calculateArea() {
-        const radiusInput = document.getElementById("radius");
-        const resultElement = document.getElementById("result");
-        const radius = parseFloat(radiusInput.value);
+      const calculator = document.getElementById("calculator");
+      const radiusInput = document.getElementById("radius");
+      const message = document.getElementById("radius-message");
+      const result = document.getElementById("result");
+      const resultValue = document.getElementById("result-value");
+      const resultDetail = document.getElementById("result-detail");
 
-        if (isNaN(radius) || radius <= 0) {
-          resultElement.textContent = "Masukkan jari-jari yang valid.";
+      calculator.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const radius = Number(radiusInput.value);
+
+        if (radiusInput.value.trim() === "" || !Number.isFinite(radius) || radius <= 0) {
+          message.textContent = "Masukkan jari-jari berupa angka yang lebih besar dari 0.";
+          radiusInput.setAttribute("aria-invalid", "true");
+          result.classList.remove("visible");
+          radiusInput.focus();
           return;
         }
 
-        const area = Math.PI * Math.pow(radius, 2);
-        resultElement.textContent = `Luas lingkaran dengan jari-jari ${radius} adalah ${area.toFixed(2)}.`;
-      }
+        const area = Math.PI * radius ** 2;
+        const numberFormat = new Intl.NumberFormat("id-ID", {
+          maximumFractionDigits: 2,
+        });
+
+        message.textContent = "";
+        radiusInput.removeAttribute("aria-invalid");
+        resultValue.textContent = `${numberFormat.format(area)} satuan²`;
+        resultDetail.textContent = `π × ${numberFormat.format(radius)}²`;
+        result.classList.remove("visible");
+        requestAnimationFrame(() => result.classList.add("visible"));
+      });
+
+      radiusInput.addEventListener("input", () => {
+        if (radiusInput.getAttribute("aria-invalid") === "true") {
+          radiusInput.removeAttribute("aria-invalid");
+          message.textContent = "";
+        }
+      });
     </script>
   </body>
 </html>

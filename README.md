@@ -1,40 +1,37 @@
-# Menghitung Luas Lingkaran
+# Kalkulator Luas Lingkaran
 
-Proyek sederhana untuk menghitung luas lingkaran berdasarkan jari-jari yang dimasukkan pengguna.
+Aplikasi sederhana untuk menghitung luas lingkaran berdasarkan jari-jari yang dimasukkan pengguna.
 
 ## Deskripsi
 
-Aplikasi ini menampilkan form input untuk memasukkan nilai jari-jari lingkaran. Setelah pengguna mengklik tombol **Hitung**, aplikasi akan menghitung luas lingkaran menggunakan rumus:
+Masukkan jari-jari lingkaran untuk menghitung luas dengan rumus:
 
-L = π × r²
+`L = π × r²`
 
-Dimana:
-- L = luas lingkaran
-- π = 3.14
-- r = jari-jari
+`π` menggunakan nilai presisi JavaScript, sedangkan hasil ditampilkan dengan maksimal dua angka desimal.
 
 ## Fitur
 
-- Input jari-jari dalam bentuk angka
-- Validasi input agar nilai yang dimasukkan valid dan lebih dari 0
-- Menampilkan hasil perhitungan luas lingkaran secara otomatis
-- Tampilan sederhana menggunakan Tailwind CSS
+- Input jari-jari dengan validasi nilai harus lebih dari 0
+- Menampilkan luas dan rumus perhitungan untuk jari-jari yang dimasukkan
+- Tampilan responsif dengan diagram lingkaran dan animasi ringan
+- Mendukung preferensi sistem untuk mengurangi animasi
 
 ## Cara Menjalankan
 
-1. Buka file `index.html` di browser Anda.
-2. Masukkan jari-jari lingkaran pada kolom yang tersedia.
-3. Klik tombol **Hitung**.
-4. Hasil luas lingkaran akan muncul di bawah tombol.
+1. Buka file `index.html` di browser.
+2. Masukkan nilai jari-jari pada kolom yang tersedia.
+3. Klik tombol **Hitung luas** atau tekan Enter.
+4. Hasil luas lingkaran akan muncul di bawah form.
 
 ## Contoh
 
-Jika jari-jari yang dimasukkan adalah `7`, maka hasilnya adalah:
+Jika jari-jari yang dimasukkan adalah `7`, hasilnya adalah:
 
-`Luas lingkaran dengan jari-jari 7 adalah 153.94.`
+`153,94 satuan²`
 
 ## Teknologi
 
 - HTML
+- CSS
 - JavaScript
-- Tailwind CSS
