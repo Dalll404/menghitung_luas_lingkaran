@@ -154,6 +154,37 @@
         padding: clamp(32px, 6vw, 68px);
       }
 
+      .datetime-card {
+        align-self: flex-start;
+        margin-bottom: 28px;
+        padding: 14px 18px;
+        border: 1px solid #e2eee6;
+        border-radius: 14px;
+        background: #f7faf7;
+      }
+
+      .clock-time {
+        display: block;
+        color: var(--green-dark);
+        font-size: clamp(30px, 4vw, 38px);
+        font-variant-numeric: tabular-nums;
+        font-weight: 750;
+        letter-spacing: -0.045em;
+        line-height: 1.1;
+      }
+
+      .clock-time.is-ticking {
+        animation: clock-tick 360ms cubic-bezier(0.2, 0.75, 0.3, 1);
+      }
+
+      .clock-date {
+        display: block;
+        margin-top: 6px;
+        color: #71817b;
+        font-size: 13px;
+        font-weight: 550;
+      }
+
       .eyebrow {
         margin: 0 0 12px;
         color: var(--green);
@@ -376,6 +407,17 @@
         }
       }
 
+      @keyframes clock-tick {
+        from {
+          opacity: 0.65;
+          transform: translateY(3px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       @media (max-width: 720px) {
         body {
           padding: 20px;
@@ -413,6 +455,10 @@
 
         .content {
           padding: 34px clamp(24px, 8vw, 48px) 38px;
+        }
+
+        .datetime-card {
+          margin-bottom: 24px;
         }
 
         .intro {
@@ -470,6 +516,10 @@
         </div>
 
         <div class="content">
+          <div class="datetime-card" aria-label="Waktu dan tanggal saat ini">
+            <time class="clock-time" id="clock-time" aria-label="Waktu saat ini"></time>
+            <time class="clock-date" id="clock-date" aria-label="Tanggal hari ini"></time>
+          </div>
           <p class="eyebrow">Kalkulator geometri</p>
           <h1 id="page-title">Luas lingkaran, jadi lebih mudah.</h1>
           <p class="intro">
@@ -517,6 +567,37 @@
       const result = document.getElementById("result");
       const resultValue = document.getElementById("result-value");
       const resultDetail = document.getElementById("result-detail");
+      const clockTime = document.getElementById("clock-time");
+      const clockDate = document.getElementById("clock-date");
+      const timeFormatter = new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23",
+      });
+      const dateFormatter = new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+
+      function updateDateTime() {
+        const now = new Date();
+        clockTime.textContent = timeFormatter
+          .formatToParts(now)
+          .filter(({ type }) => ["hour", "minute", "second"].includes(type))
+          .map(({ value }) => value)
+          .join(":");
+        clockTime.dateTime = now.toISOString();
+        clockTime.classList.remove("is-ticking");
+        requestAnimationFrame(() => clockTime.classList.add("is-ticking"));
+        clockDate.textContent = dateFormatter.format(now);
+        clockDate.dateTime = now.toISOString().slice(0, 10);
+      }
+
+      updateDateTime();
+      window.setInterval(updateDateTime, 1000);
 
       calculator.addEventListener("submit", (event) => {
         event.preventDefault();

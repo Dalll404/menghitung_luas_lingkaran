@@ -14,6 +14,7 @@ Masukkan jari-jari lingkaran untuk menghitung luas dengan rumus:
 
 - Input jari-jari dengan validasi nilai harus lebih dari 0
 - Menampilkan luas dan rumus perhitungan untuk jari-jari yang dimasukkan
+- Menampilkan jam real-time dan tanggal lengkap dalam bahasa Indonesia dengan animasi
 - Tampilan responsif dengan diagram lingkaran dan animasi ringan
 - Mendukung preferensi sistem untuk mengurangi animasi
 
